@@ -56,7 +56,7 @@ def build_agent(pages):
     groq_api_key = st.secrets.get("GROQ_API_KEY") or os.getenv("GROQ_API_KEY")
     
     # Using a valid active Groq model identifier
-    llm = ChatGroq(model="llama-3.3-70b-versatile", api_key=groq_api_key, temperature=0)
+    llm = ChatGroq(model="openai/gpt-oss-120b", api_key=groq_api_key, temperature=0)
     
     prompt = ChatPromptTemplate.from_messages([
         ("system",
