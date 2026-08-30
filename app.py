@@ -67,7 +67,7 @@ def build_agent(pages):
     )
 
   llm = ChatGroq(
-      model="openai/gpt-oss-120b",
+      model="llama-3.3-70b-versatile",
       groq_api_key=st.secrets["GROQ_API_KEY"],
       temperature=0,
   )
