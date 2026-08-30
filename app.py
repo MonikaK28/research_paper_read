@@ -53,7 +53,7 @@ def build_agent(pages):
     llm = ChatGroq(model="openai/gpt-oss-120b", api_key="GROQ_API_KEY", temperature=0)
     prompt = ChatPromptTemplate.from_messages([
         ("system",
-         "You are a medical research assistant. "
+         "You are a research assistant. "
          "If the user asks to summarize pages, use the summarize_pages tool. "
          "For all other questions, use search_pdf first; fall back to web_search if NO_CONTENT_FOUND. "
          "Format answers with bullet points and tables. Current year: 2026."),
@@ -63,7 +63,7 @@ def build_agent(pages):
     return AgentExecutor(agent=create_tool_calling_agent(llm, tools, prompt), tools=tools, verbose=True), len(chunks)
 
 # ── UI ────────────────────────────────────────────────────────────────────────
-st.title("Medical Research Assistant")
+st.title("Research Assistant")
 uploaded_file = st.file_uploader("Upload a research paper (PDF)", type="pdf")
 if uploaded_file and st.session_state.get("filename") != uploaded_file.name:
     st.session_state.clear()
