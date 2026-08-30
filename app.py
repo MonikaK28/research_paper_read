@@ -1,6 +1,7 @@
 import streamlit as st
 import fitz
 import requests
+import os
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
@@ -46,11 +47,17 @@ def build_agent(pages):
     @tool
     def web_search(query: str) -> str:
         """Search the web for latest medical guidelines. Use only if PDF has no answer."""
-        r = requests.get("https://api.search.tinyfish.ai", headers={"X-API-Key": "TINYFISH_API_KEY"}, params={"query": query}).json()
+        r = requests.get("https://api.search.tinyfish.ai", headers={"X-API-Key": st.secrets.get("TINYFISH_API_KEY", "")}, params={"query": query}).json()
         return "\n\n".join(f"{x['title']}: {x.get('snippet','')}" for x in r.get("results", [])) or "No results."
 
     tools = [search_pdf, summarize_pages, web_search]
-    llm = ChatGroq(model="openai/gpt-oss-120b", api_key="GROQ_API_KEY", temperature=0)
+    
+    # Retrieve Groq API key securely from Streamlit secrets or environment variables
+    groq_api_key = st.secrets.get("GROQ_API_KEY") or os.getenv("GROQ_API_KEY")
+    
+    # Using a valid active Groq model identifier
+    llm = ChatGroq(model="llama-3.3-70b-versatile", api_key=groq_api_key, temperature=0)
+    
     prompt = ChatPromptTemplate.from_messages([
         ("system",
          "You are a research assistant. "
